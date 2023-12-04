@@ -1,6 +1,7 @@
 import json    
 import tkinter
-from tkinter import filedialog    
+from tkinter import filedialog
+from bs4 import BeautifulSoup
 import pandas as pd
 
 # Create a tkinter root object and hide it (for the file explorer)
@@ -13,13 +14,14 @@ def main():
     
     if (json_data):
        squad_data = calculate_fm_values(json_data)
+       if (squad_data):
+           json_to_html_table(squad_data)
+       else:
+           print(f"field data couldn't be read: ", {squad_data})
     else:
         print(f"field data couldn't be read: ", {json_data})
         
-    if (squad_data):
-        json_to_html_table(squad_data)
-    else:
-        print(f"field data couldn't be read: ", {squad_data})
+
     
 def select_html_file():
     while True:
@@ -46,7 +48,7 @@ def select_html_file():
         select_html_file()
 
 def html_to_json(html_file):
-    import requests 
+    import requests
     file_content = requests.get(html_file).text
     soup = BeautifulSoup(file_content, "html.parser")
     json_data = json.dumps(soup.prettify())
